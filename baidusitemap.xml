@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>https://www.cyningsun.com/05-11-2020/proto-marshal-panic.html</loc>
+    <lastmod>2020-09-06</lastmod>
+  </url>  <url>
     <loc>https://www.cyningsun.com/09-06-2020/redis-migrate-key-lost.html</loc>
     <lastmod>2020-09-06</lastmod>
   </url>  <url>
@@ -23,9 +26,6 @@
     <lastmod>2020-09-04</lastmod>
   </url>  <url>
     <loc>https://www.cyningsun.com/05-03-2020/mobile-application-access-tech.html</loc>
-    <lastmod>2020-09-04</lastmod>
-  </url>  <url>
-    <loc>https://www.cyningsun.com/05-11-2020/proto-marshal-panic.html</loc>
     <lastmod>2020-09-04</lastmod>
   </url>  <url>
     <loc>https://www.cyningsun.com/05-23-2020/why-version-is-important-when-coaching.html</loc>
