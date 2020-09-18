@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>https://www.cyningsun.com/09-13-2020/learn-virtual-filesystem-from-lsof.html</loc>
+    <lastmod>2020-09-18</lastmod>
+  </url>  <url>
     <loc>https://www.cyningsun.com/05-11-2020/proto-marshal-panic.html</loc>
     <lastmod>2020-09-06</lastmod>
   </url>  <url>
@@ -31,31 +34,31 @@
     <loc>https://www.cyningsun.com/05-23-2020/why-version-is-important-when-coaching.html</loc>
     <lastmod>2020-09-04</lastmod>
   </url>  <url>
-    <loc>https://www.cyningsun.com/06-29-2020/how-to-write-restful-api.html</loc>
+    <loc>https://www.cyningsun.com/07-04-2020/how-to-naming-things.html</loc>
     <lastmod>2020-09-04</lastmod>
   </url>  <url>
-    <loc>https://www.cyningsun.com/07-04-2020/how-to-naming-things.html</loc>
+    <loc>https://www.cyningsun.com/06-29-2020/how-to-write-restful-api.html</loc>
     <lastmod>2020-09-04</lastmod>
   </url>  <url>
     <loc>https://www.cyningsun.com/07-22-2020/software-development-methodology.html</loc>
     <lastmod>2020-09-04</lastmod>
   </url>  <url>
-    <loc>https://www.cyningsun.com/02-02-2020/high-concurrency-hierarchical-storage.html</loc>
+    <loc>https://www.cyningsun.com/01-22-2020/use-prometheus-for-anomaly-detection.html</loc>
     <lastmod>2020-09-04</lastmod>
   </url>  <url>
-    <loc>https://www.cyningsun.com/01-22-2020/use-prometheus-for-anomaly-detection.html</loc>
+    <loc>https://www.cyningsun.com/02-02-2020/high-concurrency-hierarchical-storage.html</loc>
     <lastmod>2020-09-04</lastmod>
   </url>  <url>
     <loc>https://www.cyningsun.com/02-22-2020/hidden-secret-to-understanding-prometheus.html</loc>
     <lastmod>2020-09-04</lastmod>
   </url>  <url>
-    <loc>https://www.cyningsun.com/03-28-2020/site-reliability-engineering.html</loc>
+    <loc>https://www.cyningsun.com/02-27-2020/high-concurrency-cache-miss.html</loc>
     <lastmod>2020-09-04</lastmod>
   </url>  <url>
     <loc>https://www.cyningsun.com/03-07-2020/high-concurrency-cache-consistent.html</loc>
     <lastmod>2020-09-04</lastmod>
   </url>  <url>
-    <loc>https://www.cyningsun.com/02-27-2020/high-concurrency-cache-miss.html</loc>
+    <loc>https://www.cyningsun.com/03-28-2020/site-reliability-engineering.html</loc>
     <lastmod>2020-09-04</lastmod>
   </url>  <url>
     <loc>https://www.cyningsun.com/09-15-2019/micro-service-monitor-prometheus-client.html</loc>
@@ -91,10 +94,10 @@
     <loc>https://www.cyningsun.com/07-06-2019/chinese-kramdown-typeset.html</loc>
     <lastmod>2020-09-04</lastmod>
   </url>  <url>
-    <loc>https://www.cyningsun.com/07-20-2019/profiling-go-programs-cn.html</loc>
+    <loc>https://www.cyningsun.com/07-21-2019/go-diagnostics-cn.html</loc>
     <lastmod>2020-09-04</lastmod>
   </url>  <url>
-    <loc>https://www.cyningsun.com/07-21-2019/go-diagnostics-cn.html</loc>
+    <loc>https://www.cyningsun.com/07-20-2019/profiling-go-programs-cn.html</loc>
     <lastmod>2020-09-04</lastmod>
   </url>  <url>
     <loc>https://www.cyningsun.com/07-24-2019/prefer-table-driven-tests-cn.html</loc>
@@ -112,16 +115,16 @@
     <loc>https://www.cyningsun.com/07-16-2018/reasoning-skill.html</loc>
     <lastmod>2020-09-04</lastmod>
   </url>  <url>
-    <loc>https://www.cyningsun.com/07-27-2018/leaning-skill.html</loc>
-    <lastmod>2020-09-04</lastmod>
-  </url>  <url>
     <loc>https://www.cyningsun.com/12-26-2018/id-generator.html</loc>
     <lastmod>2020-09-04</lastmod>
   </url>  <url>
-    <loc>https://www.cyningsun.com/12-29-2018/rand.html</loc>
+    <loc>https://www.cyningsun.com/07-27-2018/leaning-skill.html</loc>
     <lastmod>2020-09-04</lastmod>
   </url>  <url>
     <loc>https://www.cyningsun.com/01-02-2019/iterative-reading.html</loc>
+    <lastmod>2020-09-04</lastmod>
+  </url>  <url>
+    <loc>https://www.cyningsun.com/12-29-2018/rand.html</loc>
     <lastmod>2020-09-04</lastmod>
   </url>  <url>
     <loc>https://www.cyningsun.com/02-03-2019/access-layer-architecture.html</loc>
@@ -136,10 +139,10 @@
     <loc>https://www.cyningsun.com/04-24-2018/lock.html</loc>
     <lastmod>2020-09-04</lastmod>
   </url>  <url>
-    <loc>https://www.cyningsun.com/06-08-2018/multi-level-hash.html</loc>
+    <loc>https://www.cyningsun.com/05-04-2018/lock-practice.html</loc>
     <lastmod>2020-09-04</lastmod>
   </url>  <url>
-    <loc>https://www.cyningsun.com/05-04-2018/lock-practice.html</loc>
+    <loc>https://www.cyningsun.com/06-08-2018/multi-level-hash.html</loc>
     <lastmod>2020-09-04</lastmod>
   </url>  <url>
     <loc>https://www.cyningsun.com/06-18-2018/skiplist.html</loc>
@@ -148,13 +151,13 @@
     <loc>https://www.cyningsun.com/07-07-2018/memory-allocator-contrasts.html</loc>
     <lastmod>2020-09-04</lastmod>
   </url>  <url>
+    <loc>https://www.cyningsun.com/06-01-2016/nehalem-arch.html</loc>
+    <lastmod>2020-09-04</lastmod>
+  </url>  <url>
     <loc>https://www.cyningsun.com/05-01-2016/decision.html</loc>
     <lastmod>2020-09-04</lastmod>
   </url>  <url>
     <loc>https://www.cyningsun.com/06-16-2016/critical-thinking.html</loc>
-    <lastmod>2020-09-04</lastmod>
-  </url>  <url>
-    <loc>https://www.cyningsun.com/06-01-2016/nehalem-arch.html</loc>
     <lastmod>2020-09-04</lastmod>
   </url>  <url>
     <loc>https://www.cyningsun.com/07-20-2016/self-awareness.html</loc>
@@ -169,19 +172,22 @@
     <loc>https://www.cyningsun.com/02-26-2017/how-to-reading.html</loc>
     <lastmod>2020-09-04</lastmod>
   </url>  <url>
-    <loc>https://www.cyningsun.com/02-02-2016/communication.html</loc>
-    <lastmod>2020-09-04</lastmod>
-  </url>  <url>
     <loc>https://www.cyningsun.com/03-09-2016/chat-time.html</loc>
     <lastmod>2020-09-04</lastmod>
   </url>  <url>
-    <loc>https://www.cyningsun.com/03-17-2016/comm-sys.html</loc>
+    <loc>https://www.cyningsun.com/02-02-2016/communication.html</loc>
     <lastmod>2020-09-04</lastmod>
   </url>  <url>
     <loc>https://www.cyningsun.com/03-21-2016/trie.html</loc>
     <lastmod>2020-09-04</lastmod>
   </url>  <url>
+    <loc>https://www.cyningsun.com/03-17-2016/comm-sys.html</loc>
+    <lastmod>2020-09-04</lastmod>
+  </url>  <url>
     <loc>https://www.cyningsun.com/04-04-2016/google-paper.html</loc>
+    <lastmod>2020-09-04</lastmod>
+  </url>  <url>
+    <loc>https://www.cyningsun.com/04-13-2016/recent-blog.html</loc>
     <lastmod>2020-09-04</lastmod>
   </url>  <url>
     <loc>https://www.cyningsun.com/04-04-2016/kmp.html</loc>
@@ -190,19 +196,16 @@
     <loc>https://www.cyningsun.com/04-10-2016/string-match.html</loc>
     <lastmod>2020-09-04</lastmod>
   </url>  <url>
-    <loc>https://www.cyningsun.com/04-13-2016/recent-blog.html</loc>
-    <lastmod>2020-09-04</lastmod>
-  </url>  <url>
     <loc>https://www.cyningsun.com/10-11-2014/syntopical-reading-plan.html</loc>
     <lastmod>2020-09-04</lastmod>
   </url>  <url>
     <loc>https://www.cyningsun.com/05-31-2015/youcompleteme-install.html</loc>
     <lastmod>2020-09-04</lastmod>
   </url>  <url>
-    <loc>https://www.cyningsun.com/10-15-2014/reading-mybatis-source-code.html</loc>
+    <loc>https://www.cyningsun.com/06-13-2015/vim-quickfix.html</loc>
     <lastmod>2020-09-04</lastmod>
   </url>  <url>
-    <loc>https://www.cyningsun.com/06-13-2015/vim-quickfix.html</loc>
+    <loc>https://www.cyningsun.com/10-15-2014/reading-mybatis-source-code.html</loc>
     <lastmod>2020-09-04</lastmod>
   </url>  <url>
     <loc>https://www.cyningsun.com/12-02-2015/mysql-index-optimize.html</loc>
@@ -211,10 +214,10 @@
     <loc>https://www.cyningsun.com/04-22-2014/css-standard-five.html</loc>
     <lastmod>2020-09-04</lastmod>
   </url>  <url>
-    <loc>https://www.cyningsun.com/04-22-2014/css-standard-four.html</loc>
+    <loc>https://www.cyningsun.com/05-01-2014/mysql-charset.html</loc>
     <lastmod>2020-09-04</lastmod>
   </url>  <url>
-    <loc>https://www.cyningsun.com/05-01-2014/mysql-charset.html</loc>
+    <loc>https://www.cyningsun.com/04-22-2014/css-standard-four.html</loc>
     <lastmod>2020-09-04</lastmod>
   </url>  <url>
     <loc>https://www.cyningsun.com/07-04-2014/inside-log4j.html</loc>
@@ -223,31 +226,31 @@
     <loc>https://www.cyningsun.com/08-17-2014/reading-mybatis-spring-source-code.html</loc>
     <lastmod>2020-09-04</lastmod>
   </url>  <url>
-    <loc>https://www.cyningsun.com/09-07-2014/performance-optimization-on-mysql.html</loc>
-    <lastmod>2020-09-04</lastmod>
-  </url>  <url>
     <loc>https://www.cyningsun.com/09-09-2014/data-persistence.html</loc>
     <lastmod>2020-09-04</lastmod>
   </url>  <url>
     <loc>https://www.cyningsun.com/09-22-2014/business-modeling.html</loc>
     <lastmod>2020-09-04</lastmod>
   </url>  <url>
-    <loc>https://www.cyningsun.com/03-03-2014/google-search.html</loc>
+    <loc>https://www.cyningsun.com/09-07-2014/performance-optimization-on-mysql.html</loc>
     <lastmod>2020-09-04</lastmod>
   </url>  <url>
     <loc>https://www.cyningsun.com/03-21-2014/study-skills.html</loc>
     <lastmod>2020-09-04</lastmod>
   </url>  <url>
-    <loc>https://www.cyningsun.com/04-13-2014/web-security.html</loc>
+    <loc>https://www.cyningsun.com/03-03-2014/google-search.html</loc>
     <lastmod>2020-09-04</lastmod>
   </url>  <url>
-    <loc>https://www.cyningsun.com/04-17-2014/multiplexing-in-thrift-enhancing-thrift-to-meet-enterprise-expectations.html</loc>
+    <loc>https://www.cyningsun.com/04-13-2014/web-security.html</loc>
     <lastmod>2020-09-04</lastmod>
   </url>  <url>
     <loc>https://www.cyningsun.com/04-18-2014/basic-knowledge-about-android-screen.html</loc>
     <lastmod>2020-09-04</lastmod>
   </url>  <url>
     <loc>https://www.cyningsun.com/04-19-2014/css-standard-two.html</loc>
+    <lastmod>2020-09-04</lastmod>
+  </url>  <url>
+    <loc>https://www.cyningsun.com/04-17-2014/multiplexing-in-thrift-enhancing-thrift-to-meet-enterprise-expectations.html</loc>
     <lastmod>2020-09-04</lastmod>
   </url>  <url>
     <loc>https://www.cyningsun.com/04-18-2014/css-standard-one.html</loc>
@@ -262,10 +265,10 @@
     <loc>https://www.cyningsun.com/04-25-2011/stl-rotate.html</loc>
     <lastmod>2020-09-04</lastmod>
   </url>  <url>
-    <loc>https://www.cyningsun.com/04-19-2012/bitwise-operation.html</loc>
+    <loc>https://www.cyningsun.com/05-07-2012/stl-permutation.html</loc>
     <lastmod>2020-09-04</lastmod>
   </url>  <url>
-    <loc>https://www.cyningsun.com/05-07-2012/stl-permutation.html</loc>
+    <loc>https://www.cyningsun.com/04-19-2012/bitwise-operation.html</loc>
     <lastmod>2020-09-04</lastmod>
   </url>  <url>
     <loc>https://www.cyningsun.com/05-08-2012/stl-shuffle.html</loc>
@@ -274,10 +277,10 @@
     <loc>https://www.cyningsun.com/02-28-2014/velocity-resource-load.html</loc>
     <lastmod>2020-09-04</lastmod>
   </url>  <url>
-    <loc>https://www.cyningsun.com/04-04-2011/stl-heap.html</loc>
+    <loc>https://www.cyningsun.com/04-04-2011/stl-rbtree.html</loc>
     <lastmod>2020-09-04</lastmod>
   </url>  <url>
-    <loc>https://www.cyningsun.com/04-04-2011/stl-rbtree.html</loc>
+    <loc>https://www.cyningsun.com/04-04-2011/stl-heap.html</loc>
     <lastmod>2020-09-04</lastmod>
   </url>  <url>
     <loc>https://www.cyningsun.com/04-08-2011/stl-list-sort.html</loc>
