@@ -15,7 +15,86 @@
 <meta property="article:published_time" content="2014-08-17 00:00:00 +0800"/>
 <meta property="og:url" content="/08-17-2014/reading-mybatis-spring-source-code.html">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta itemprop="description" name="description" content="Mybatis-Spring做了什么？MyBatis-Spring 会帮助你将 MyBatis 代码无缝地整合到 Spring 中。 使用这个类库中的类, Spring 将会加载必要的 MyBatis 工厂类和 session 类。 这个类库也提供一个简单的方式来注入 MyBatis 数据映射器和 SqlSession">
+<meta itemprop="description" name="description" content="Mybatis-Spring做了什么？MyBatis-Spring 会帮助你将 MyBatis 代码无缝地整合到 Spring 中。 使用这个类库中的类, Spring 将会加载必要的 MyBatis 工厂类和 session 类。 这个类库也提供一个简单的方式来注入 MyBatis 数据映射器和 SqlSession 到业务层的 bean 中。
+Mybatis-Spring如何做到？Mybatis需要首先扫描到所有的Mybatis的Mapper类，然后将通过session获取该Mapper对应的实例。然后Spring就可以将Mybatis的Mapper实例注入到Service中使用了。首先从配置入口来看
+&amp;lt;bean class=&#34;org.mybatis.spring.mapper.MapperScannerConfigurer&#34;&amp;gt;
+  &amp;lt;property name=&#34;basePackage&#34; value=&#34;&#34; /&amp;gt;
+&amp;lt;/bean&amp;gt;
+
+入口类为MapperScannerConfigurer, 该类实现了BeanDefinitionRegistryPostProcessor接口用来查找Mapper类，然后将MapperFactoryBean设置为Mapper的实现类。MapperFactoryBean是一个代理类，会根据Mapper信息通过sqlSession获取对应Mapper的实例。以上就是Mybatis-Spring的所有任务。
+MapperScannerConfigurer如何查找Mapper了解Mapper查找的原理，首先要了解BeanDefinitionRegistryPostProcessor接口。开发人员通过 XML 文件或者 Annotation 预定义配置 bean 的各种属性后，启动 Spring 容器，Spring 容器会首先解析这些配置属性，生成对应都 Bean Definition，装入到 DefaultListableBeanFactory 对象的属性容器中去。Spring 框架会根据配置，过滤出 BeanDefinitionRegistryPostProcessor 类型的 Bean 定义，并通过 Spring 框架生成其对应的 Bean 对象。Spring 容器会在实例化开发人员所定义的 Bean 前先调用该 processor 的 postProcessBeanDefinitionRegistry(…) 方法。此处可以操作和配置Bean Definition。下面是MapperScannerConfigurer的源码
+ public void postProcessBeanDefinitionRegistry(BeanDefinitionRegistry registry) throws BeansException &amp;#123;
+   if (this.processPropertyPlaceHolders) &amp;#123;
+     processPropertyPlaceHolders();
+   &amp;#125;
+//配置需要查找的Mapper类的信息
+   ClassPathMapperScanner scanner = new ClassPathMapperScanner(registry);
+   scanner.setAddToConfig(this.addToConfig);
+   scanner.setAnnotationClass(this.annotationClass);
+   scanner.setMarkerInterface(this.markerInterface);
+   scanner.setSqlSessionFactory(this.sqlSessionFactory);
+   scanner.setSqlSessionTemplate(this.sqlSessionTemplate);
+   scanner.setSqlSessionFactoryBeanName(this.sqlSessionFactoryBeanName);
+   scanner.setSqlSessionTemplateBeanName(this.sqlSessionTemplateBeanName);
+   scanner.setResourceLoader(this.applicationContext);
+   scanner.setBeanNameGenerator(this.nameGenerator);
+   scanner.registerFilters();
+   scanner.scan(StringUtils.tokenizeToStringArray(this.basePackage, ConfigurableApplicationContext.CONFIG_LOCATION_DELIMITERS));
+ &amp;#125;
+
+ClassPathMapperScanner继承了ClassPathBeanDefinitionScanner，scanner.scan()语句会调用ClassPathMapperScanner的doScan函数。然后此函数中将MapperFactoryBean设置为查找到的Mapper的实现类
+public Set&amp;lt;BeanDefinitionHolder&amp;gt; doScan(String... basePackages) &amp;#123;
+   Set&amp;lt;BeanDefinitionHolder&amp;gt; beanDefinitions = super.doScan(basePackages);
+
+   if (beanDefinitions.isEmpty()) &amp;#123;
+     logger.warn(&#34;No MyBatis mapper was found in &#39;&#34; + Arrays.toString(basePackages) + &#34;&#39; package. Please check your configuration.&#34;);
+   &amp;#125; else &amp;#123;
+  //遍历找到的Mapper
+     for (BeanDefinitionHolder holder : beanDefinitions) &amp;#123;
+       GenericBeanDefinition definition = (GenericBeanDefinition) holder.getBeanDefinition();
+
+       //下面的definition.getPropertyValues().add函数均为实例化代理类设置参数，以使得MapperFactoryBean完成代理
+       definition.getPropertyValues().add(&#34;mapperInterface&#34;, definition.getBeanClassName());
+	// 设置Mapper的实现类为MapperFactoryBean
+       definition.setBeanClass(MapperFactoryBean.class);
+
+       definition.getPropertyValues().add(&#34;addToConfig&#34;, this.addToConfig);
+
+       boolean explicitFactoryUsed = false;
+       if (StringUtils.hasText(this.sqlSessionFactoryBeanName)) &amp;#123;
+         definition.getPropertyValues().add(&#34;sqlSessionFactory&#34;, new RuntimeBeanReference(this.sqlSessionFactoryBeanName));
+         explicitFactoryUsed = true;
+       &amp;#125; else if (this.sqlSessionFactory != null) &amp;#123;
+         definition.getPropertyValues().add(&#34;sqlSessionFactory&#34;, this.sqlSessionFactory);
+         explicitFactoryUsed = true;
+       &amp;#125;
+
+       if (StringUtils.hasText(this.sqlSessionTemplateBeanName)) &amp;#123;
+         definition.getPropertyValues().add(&#34;sqlSessionTemplate&#34;, new RuntimeBeanReference(this.sqlSessionTemplateBeanName));
+         explicitFactoryUsed = true;
+       &amp;#125; else if (this.sqlSessionTemplate != null) &amp;#123;
+         definition.getPropertyValues().add(&#34;sqlSessionTemplate&#34;, this.sqlSessionTemplate);
+         explicitFactoryUsed = true;
+       &amp;#125;
+
+       if (!explicitFactoryUsed) &amp;#123;
+         definition.setAutowireMode(AbstractBeanDefinition.AUTOWIRE_BY_TYPE);
+       &amp;#125;
+     &amp;#125;
+   &amp;#125;
+
+   return beanDefinitions;
+ &amp;#125;
+
+然后就是MapperFactoryBean根据实例化的信息创建对应的Mapper实例了
+public T getObject() throws Exception &amp;#123;
+  return getSqlSession().getMapper(this.mapperInterface);
+&amp;#125;
+
+就这样Mybatis-Spring省去了手工配置Mapper，帮助开发者实现自动的配置，使得开发快速。
+Mybatis涉及的主要类MapperScannerConfigurer – ClassPathMapperScanner – MapperFactoryBean
+(完)
+本文作者：cyningsun本文地址： https://www.cyningsun.com/08-17-2014/reading-mybatis-spring-source-code.html 版权声明：本博客所有文章除特别声明外，均采用 CC BY-NC-ND 3.0 CN 许可协议。转载请注明出处！">
 
 <meta name="keywords" content="mybatis,spring">
 

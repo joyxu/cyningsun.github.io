@@ -18,7 +18,61 @@
 <meta itemprop="description" name="description" content="背景上一篇文章讲述了缓存的本质，使用快速的存储，承载尽可能多的请求，那么衡量缓存服务质量有两个标准：
 
 平均访问延迟AAT（Average Access Time） = HitTime + (Miss Ratio * Miss Penalty)
-缓存命中率 Cache Hit Ratio = [Cache Hits /">
+缓存命中率 Cache Hit Ratio = [Cache Hits / (Cache Hits + Cache Misses)] x 100 %前者因为不涉及技术问题，不再详谈。后者，却是至关重要。
+
+缓存命中（Cache Hit），符合我们预期，喜闻乐见；缓存未命中（Cache Miss），就很有可能要了老命。各种称谓也很繁杂
+
+国内按照场景分称为：缓存击穿、缓存穿透、缓存雪崩国外使用不同词汇表达同一含义：Thundering Herd、Cache stampede、Dog-Pile Effect
+
+以下的篇幅分场景来讲下缓存不命中的场景和常见的解决方案
+数据不在缓存Cold cache缓存最好是使用渐进式策略进行warmup，要做到业务无感就需要引入中间组件，例如Facebook使用 mcrouter 来预热新机群
+
+Adding / removing nodes模哈希路由的主要缺点是缓存节点的数量需要保持稳定，增加节点或者节点下线将导致大多数缓存散列到新节点。即使这些值仍在缓存中，如果将Key分发给其他节点，查找也会 Miss。使用一致性哈希可以使缓存节点增减更加灵活。
+
+Out of cache memory对于不在内存中的数据，有两种可能：
+
+缓存时间到期（TTL），数据从缓存中淘汰出去了
+由于之前没有访问，数据不在缓存中
+
+对于不在缓存的访问，处理的方式比较统一，严格限制并发访问下游存储，具体落实到各个公司各不相同：
+
+Instagram： 在C++语言中使用 Promise 模式来限制并发访问
+Google：在Go语言中使用 Single Flight 来限制并发访问
+Facebook：使用 Leases 机制，保证同一时间只有第一个访问到不在缓存的请求可以访问下游，并将其添加到缓存；其他请求则返回未命中，然后等待一段时间再次尝试访问缓存。
+
+数据不存在对于数据不存在的情况，尽量通过参数校验的情况予以拦截。拿公众号文章的链接举例:
+早期
+http://mp.weixin.qq.com/s?__biz=MzAwNTMxMzg1MA==&amp;amp;mid=2654067776&amp;amp;idx=1&amp;amp;sn=b4c1261a785a59dd6268142b0b358b50&amp;amp;scene=4#wechat_redirect
+可以看到该链接中几个关键的请求参数：
+
+__biz=MzAwNTMxMzg1MA== // 公众号ID base64mid=2654067776        // 推送IDidx=1                // 消息位置（每次推送有多篇文章）
+
+有这些参数，完全可以随意拼接参数，伪造URL爬取微信公众号的数据。如果URL并没有对应的数据，那么微信就会遇到数据不存在穿透到下层存储的问题。
+中期
+http://mp.weixin.qq.com/s?timestamp=1469352451&amp;amp;src=3&amp;amp;ver=1&amp;amp;signature=56kgMk71dIMM59VsUWlueRZ1ljkNODBEgrW78vmgXfJs82nkMESO8W*7EXf2ylOyamiUvL0zQ5OAfVraI8tPp-Hhdzv5WRQKSPa-MF6hiFMZf7rqxmZRvsYsd-7WSsy5qiafAQNfxBSkWzSulgB575CWRYnn6QZTRJ4NdR*gs0s=
+唔，带上时间戳了，不太好搞了，但是如果知道签名策略，仍然可以解出来必需的访问参数
+最新
+https://mp.weixin.qq.com/s/zCyzv_DRzLSUjhs5E9gZtQ
+最新版就丧心病狂了，直接转成了短链接，外部人员丝毫没有办法，完美解决了问题。
+对于无法通过数据拦截的，则需要根据依赖额外的过滤器来进行甄别，例如：Bloom filter、Cuckoo filter 等。以容忍误报置换空间，节约存储资源
+总结除了以上常规且通用的处理方案，业界还有各种贴合业务场景的方案，在此不过多涉及。
+
+非常规方案：
+
+Pre-Populating Cache
+monkey patch
+Randomize TTL values
+
+
+
+
+参考链接 
+
+https://engineering.fb.com/web/introducing-mcrouter-a-memcached-protocol-router-for-scaling-memcached-deployments/
+https://github.com/leafney/wxSpider/blob/master/GETCONTENT.md
+https://instagram-engineering.com/thundering-herds-promises-82191c8af57d
+
+本文作者：cyningsun本文地址： https://www.cyningsun.com/02-27-2020/high-concurrency-cache-miss.html 版权声明：本博客所有文章除特别声明外，均采用 CC BY-NC-ND 3.0 CN 许可协议。转载请注明出处！">
 
 <meta name="keywords" content="缓存击穿,缓存雪崩,缓存穿透">
 

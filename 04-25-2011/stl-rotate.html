@@ -17,7 +17,198 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta itemprop="description" name="description" content="STL在rotate上的优化是极尽其所能的。分别对前向访问，双向访问，随机访问的数据结构实现了三个版本的rotate。下面是自己按照对三种算法的理解，自己进行的实现。实现中我尽力避免使用C++的特性，从而以后可以在纯C的代码中使用。
 下面是我使用到的数据结构，单向链表与双向链表，用于实现算法和验证算法的正确性：
-//单">
+//单链表节点
+typedef struct Node* Link;
+struct Node&amp;#123;
+    int value;
+    Link next;
+    Link forward(Link&amp;amp; i)
+    &amp;#123;
+        i=i-&amp;gt;next;
+        return i;
+    &amp;#125;
+    void swap(Link&amp;amp; i)
+    &amp;#123;
+        int temp=i-&amp;gt;value;
+        i-&amp;gt;value=this-&amp;gt;value;
+        this-&amp;gt;value=temp;
+    &amp;#125;
+&amp;#125;;
+ 
+typedef struct BiNode* BiLink;
+struct BiNode&amp;#123;
+    int value;
+    BiLink next;
+    BiLink prev;
+    BiLink forward(BiLink&amp;amp; i)
+    &amp;#123;
+        i=i-&amp;gt;next;
+        return i;
+    &amp;#125;
+    BiLink backward(BiLink&amp;amp; i)
+    &amp;#123;
+        i=i-&amp;gt;prev;
+        return i;
+    &amp;#125;
+    void swap(BiLink&amp;amp; i)
+    &amp;#123;
+        int temp=i-&amp;gt;value;
+        i-&amp;gt;value=this-&amp;gt;value;
+        this-&amp;gt;value=temp;
+    &amp;#125;
+&amp;#125;;
+
+版本一：forward iterator,即类单向链表上的rotate//forward iterator,即类单向链表
+void forwardRotate(Link head,Link middle)
+&amp;#123;
+    Link i=middle;
+    while(true)
+    &amp;#123;
+        head-&amp;gt;swap(i);
+        head-&amp;gt;forward(head);
+        i-&amp;gt;forward(i);
+        if(head==middle)
+        &amp;#123;
+            if(i==NULL) return ;            //如果前后两指针同时到达末尾，则结束
+            middle=i;                       //如果前者先到达末尾，则将i作为middle，继续rotate
+        &amp;#125;
+        else if(i==NULL)
+            i=middle;                       //如果后者先到达末尾，则将middle作为i，继续rotate
+    &amp;#125;
+&amp;#125;
+
+另附上注释的图像版以帮助理解： 
+版本二：bidirection iterator,即类双向链表上的rotate这个版本的算法很容易理解，即是分段进行反转，之后对左右数据进行反转，代码如下：
+void reverse(BiLink first,BiLink last)
+&amp;#123;
+    while(first!=last &amp;amp;&amp;amp;first!=last-&amp;gt;backward(last))
+    &amp;#123;
+        last-&amp;gt;swap(first);
+        first-&amp;gt;forward(first);
+    &amp;#125;
+&amp;#125;
+ 
+void bidirectionRotate(BiLink first,BiLink middle,BiLink last)
+&amp;#123;
+    reverse(first,middle);
+    reverse(middle,last);
+    reverse(first,last);
+&amp;#125;
+
+版本三：random access iterator,即类数组上的rotate该版本的效率无疑是最高的，当然算法因为涉及到有关群论的知识所以有点难以理解。其理论支持详见：数组循环移位问题
+自己实现版本的代码如下：
+//求最大公约数
+int gcd(int m,int n)
+&amp;#123;
+    int t;
+    while(n!=0)
+    &amp;#123;
+        t=m%n;
+        m=n;
+        n=t;
+    &amp;#125;
+    return m;
+&amp;#125;
+//循环移位
+void rotate_cycle(int array[],int len,int initial,int shift)
+&amp;#123;
+    int value=array[initial];
+    int first=initial;
+    int next=initial+shift;
+    while(next!=initial)
+    &amp;#123;
+        array[first]=array[next];
+        first=next;
+        next=(next+shift)%len;
+    &amp;#125;
+    array[first]=value;
+&amp;#125;
+ 
+void randomRotate(int array[],int middle,int len)
+&amp;#123;
+    int n=gcd(len,middle);
+    while(n--)
+        rotate_cycle(array,len,n,middle);
+&amp;#125;
+
+最后附上我自己的测试代码：
+int main()
+&amp;#123;
+    int len=20;
+    srand(time(0));
+    //单向访问链表的rotate
+    Link head=new Node;
+    head-&amp;gt;value=25;
+    cout&amp;lt;&amp;lt;head-&amp;gt;value&amp;lt;&amp;lt;&#34;\t&#34;;
+    Link p=head;
+    Link middle;
+    for(int i=0;i&amp;lt;len;i++)
+    &amp;#123;
+        Link next=new Node;
+        p-&amp;gt;next=next;
+        next-&amp;gt;value=rand()%200;
+        cout&amp;lt;&amp;lt;next-&amp;gt;value&amp;lt;&amp;lt;&#34;\t&#34;;
+        if(i==len/4*3)
+            middle=p;
+        p=p-&amp;gt;next;
+    &amp;#125;
+    cout&amp;lt;&amp;lt;endl;
+    p-&amp;gt;next=NULL;
+    forwardRotate(head,middle);	
+    p=head;
+    while(p!=NULL)
+    &amp;#123;
+        cout&amp;lt;&amp;lt;p-&amp;gt;value&amp;lt;&amp;lt;&#34;\t&#34;;
+        p=p-&amp;gt;next;
+    &amp;#125;
+    cout&amp;lt;&amp;lt;endl;
+
+    //双向链表的rotate
+    BiLink bihead=new BiNode;
+    bihead-&amp;gt;value=25;
+    cout&amp;lt;&amp;lt;bihead-&amp;gt;value&amp;lt;&amp;lt;&#34;\t&#34;;
+    BiLink bip=bihead;
+    BiLink bimiddle;
+    for(int i=0;i&amp;lt;len;i++)
+    &amp;#123;
+        BiLink binext=new BiNode;
+        bip-&amp;gt;next=binext;
+        binext-&amp;gt;prev=bip;
+        binext-&amp;gt;value=rand()%200;
+        cout&amp;lt;&amp;lt;binext-&amp;gt;value&amp;lt;&amp;lt;&#34;\t&#34;;
+        if(i==len/4)
+            bimiddle=bip;
+        bip=bip-&amp;gt;next;
+    &amp;#125;
+    cout&amp;lt;&amp;lt;endl;
+    BiNode end;
+    bip-&amp;gt;next=&amp;amp;end;
+    end.prev=bip;
+    bidirectionRotate(bihead,bimiddle,&amp;amp;end);	
+    bip=bihead;
+    while(bip!=&amp;amp;end)
+    &amp;#123;
+        cout&amp;lt;&amp;lt;bip-&amp;gt;value&amp;lt;&amp;lt;&#34;\t&#34;;
+        bip=bip-&amp;gt;next;
+    &amp;#125;
+    cout&amp;lt;&amp;lt;endl;
+
+    int array[len];
+    for(int i=0;i&amp;lt;len;i++)
+    &amp;#123;
+        array[i]=rand()%200;
+        cout&amp;lt;&amp;lt;array[i]&amp;lt;&amp;lt;&#34;\t&#34;;
+    &amp;#125;	
+    cout&amp;lt;&amp;lt;endl;
+    randomRotate(array,len/3,len);
+    for(int i=0;i&amp;lt;len;i++)
+        cout&amp;lt;&amp;lt;array[i]&amp;lt;&amp;lt;&#34;\t&#34;;
+    cout&amp;lt;&amp;lt;endl;
+    return 0;
+&amp;#125;
+
+OK，大致如此了。三个版本的rotate，极至的优化手段，这也许就是STL的魅力所在吧。
+本文作者：cyningsun本文地址： https://www.cyningsun.com/04-25-2011/stl-rotate.html 版权声明：本博客所有文章除特别声明外，均采用 CC BY-NC-ND 3.0 CN 许可协议。转载请注明出处！">
 
 <meta name="keywords" content="STL,rotate">
 
@@ -390,7 +581,7 @@ gtag('config', 'UA-156665333-1');
           
             <li><span><a href="/04-08-2011/stl-list-sort.html">SGI-STL源码剖析之list::sort()</a></span></li>
           
-            <li><span><a href="/04-04-2011/stl-heap.html">SGI-STL源码剖析之Heap</a></span></li>
+            <li><span><a href="/04-04-2011/stl-rbtree.html">SGI-STL源码剖析之RB-tree</a></span></li>
           
   </ol>
 

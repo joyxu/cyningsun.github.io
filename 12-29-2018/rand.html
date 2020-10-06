@@ -16,7 +16,140 @@
 <meta property="og:url" content="/12-29-2018/rand.html">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta itemprop="description" name="description" content="背景在做微信看一看的时候，由于推荐服务中经常会有打散等随机操作，所以经常会使用到rand函数获取随机数。在做性能优化的时候发现，rand函数在多线程服务中性能非常之差。当前回忆起来因此有了这篇文章。
-你不了解的rand函数为什么rand性能差，最快能排查问题的方式，来时通过阅读源代码，来弄清楚rand究竟是怎么实现的。">
+你不了解的rand函数为什么rand性能差，最快能排查问题的方式，来时通过阅读源代码，来弄清楚rand究竟是怎么实现的。
+来源
+#include &amp;lt;stdlib.h&amp;gt;
+ 
+#undef rand
+ 
+
+/* Return a random integer between 0 and RAND_MAX.  */
+int
+rand ()
+&amp;#123;
+  return (int) __random ();
+&amp;#125;
+可以看到函数调用__random(), 我们继续跟进这个函数
+stdlib/random.c
+
+/* POSIX.1c requires that there is mutual exclusion for the `rand&#39; and
+   `srand&#39; functions to prevent concurrent calls from modifying common
+   data.  */
+__libc_lock_define_initialized (static, lock)
+
+
+long int
+__random ()
+&amp;#123;
+  int32_t retval;
+ 
+  __libc_lock_lock (lock);
+ 
+  (void) __random_r (&amp;amp;unsafe_state, &amp;amp;retval);
+ 
+  __libc_lock_unlock (lock);
+ 
+  return retval;
+&amp;#125;
+
+这下真想大白了，函数中有一个锁防止并发调用__random_r()。在文件头可以看到锁初始化的注释，加锁的目的是不希望多线程并发调用，同时修改功能的数据。那么我们是不是可以看下有没有什么替代函数。能否使用不加锁版本的随机数呢？
+从代码中我们可以看到，此段代码调用了__rand_r()，我们看下它做了什么？
+random_r.c
+/* 
+   If we are using the trivial TYPE_0 R.N.G., just do the old linear
+   congruential bit.  Otherwise, we do our fancy trinomial stuff, which is the
+   same in all the other cases due to all the global variables that have been
+   set up.  The basic operation is to add the number at the rear pointer into
+   the one at the front pointer.  Then both pointers are advanced to the next
+   location cyclically in the table.  The value returned is the sum generated,
+   reduced to 31 bits by throwing away the &#34;least random&#34; low bit.
+   Note: The code takes advantage of the fact that both the front and
+   rear pointers can&#39;t wrap on the same call by not testing the rear
+   pointer if the front one has wrapped.  Returns a 31-bit random number.  */
+ 
+int
+__random_r (buf, result)
+     struct random_data *buf;
+     int32_t *result;
+&amp;#123;
+  int32_t *state;
+ 
+  if (buf == NULL || result == NULL)
+    goto fail;
+ 
+  state = buf-&amp;gt;state;
+ 
+  if (buf-&amp;gt;rand_type == TYPE_0)
+    &amp;#123;
+      int32_t val = state[0];
+      val = ((state[0] * 1103515245) + 12345) &amp;amp; 0x7fffffff;
+      state[0] = val;
+      *result = val;
+    &amp;#125;
+  else
+    &amp;#123;
+      int32_t *fptr = buf-&amp;gt;fptr;
+      int32_t *rptr = buf-&amp;gt;rptr;
+      int32_t *end_ptr = buf-&amp;gt;end_ptr;
+      int32_t val;
+ 
+      val = *fptr += *rptr;
+      /* Chucking least random bit.  */
+      *result = (val &amp;gt;&amp;gt; 1) &amp;amp; 0x7fffffff;
+      ++fptr;
+      if (fptr &amp;gt;= end_ptr)
+    &amp;#123;
+      fptr = state;
+      ++rptr;
+    &amp;#125;
+      else
+    &amp;#123;
+      ++rptr;
+      if (rptr &amp;gt;= end_ptr)
+        rptr = state;
+    &amp;#125;
+      buf-&amp;gt;fptr = fptr;
+      buf-&amp;gt;rptr = rptr;
+    &amp;#125;
+  return 0;
+ 
+ fail:
+  __set_errno (EINVAL);
+  return -1;
+&amp;#125;
+以上就是主要的运算式了,基本上输入会有两个值, buf 与result, result 就是结果, 而buf则是输入的一种seed, rand()会挑一个默认值,每次调用会改变他的默认值,这也是为什么它用锁去保护他的原因,避免两个线程取到相同的值。由于在多线程情况下，不同线程是为不同用户的请求提供服务的，因此两个线程取到同相同的值，并不会影响逻辑和功能。
+因此，在多线程服务中，建议可以直接调用rand_r()代替rand()
+伪随机生成算法那么上面这段代码究竟是什么是在做什么呢？其实主要是实现了线性同余算法与线性累加反馈法。
+线性同余法
+线性同余法，LCG(linear congruential generator)，是经典的伪随机数产生器算法，速度快，容易理解实现。 LCG 算法数学上基于公式：
+X(n+1) = (a * X(n) + c) % m
+其中，各系数为：模m, 系数a, 0 &amp;lt; a &amp;lt; m，增量c, 0 &amp;lt;= c &amp;lt; m，原始值(种子) 0 &amp;lt;= X(0) &amp;lt; m 。其中参数c, m, a比较敏感，或者说直接影响了伪随机数产生的质量。
+GLIBC中对LCG的实现，取a = 1103515245, c = 12345, m = 134217728，即
+
+X(n+1) = (1103515245 * X(n) + 12345) &amp;amp; 2147483647
+
+线性累加反馈法
+线性累加反馈法，即LAFM（linear additive feedback method），以下是GLIBC使用的线性累加反馈法的流程描述。其中，2147483647 = 2^31 – 1，4294967296 = 2^32. 所有变量都是整数。 对于给定的种子常量s, 初始化序列r0…r33通过以下步骤计算：
+
+r(0) = s
+r(i) = (16807 * r(i-1) ) % 2147483647 (i = 1…30)
+r(i) = r(i-31) (i = 31…33)
+注意数乘16807的结果应该由足够大的整数类型存储，避免取模操作之前发生值溢出。r(i-1)在乘法操作已经是32位整数，r(i)计算结果确保是0到2147483646之间的正整数, 即使r(i-1)为负数。
+
+
+
+从r34开始的伪随机序列，通过以下的线性反馈循环来计算：
+
+r(i) = (r(i-3) + r(i-31)) % 4294967296 (i ≥ 34)
+
+忽略掉r0…r343序列，rand()函数输出的伪随机数o(i)为：
+
+o(i) = r(i+344) &amp;gt;&amp;gt; 1
+r(i+344)的个位数字移除，生成31位随机数o(i)。
+
+
+
+本文作者：cyningsun本文地址： https://www.cyningsun.com/12-29-2018/rand.html 版权声明：本博客所有文章除特别声明外，均采用 CC BY-NC-ND 3.0 CN 许可协议。转载请注明出处！">
 
 <meta name="keywords" content="rand,随机数,random">
 
