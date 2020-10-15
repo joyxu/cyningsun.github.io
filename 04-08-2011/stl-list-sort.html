@@ -17,72 +17,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta itemprop="description" name="description" content="// list 不能使用STL 算法 sort()，必须使用自己的 sort() member //function，因为STL算法sort() 只接受RamdonAccessIterator.// 本函式采用 quick sort.
 template &amp;lt;class T, class Alloc&amp;gt;
-void list&amp;lt;T, Alloc&amp;gt;::sort() &amp;#123;
-  // 以下判断，如果是空白串行，或仅有一个元素，就不做任何动作。
-  // 使用 size() == 0 || size() == 1 来判断，虽然也可以，但是比较慢。
-  if (node-&amp;gt;next == node || link_type(node-&amp;gt;next)-&amp;gt;next == node) return;
-  // 一些新的 lists，做为中介数据存放区
-  list&amp;lt;T, Alloc&amp;gt; carry;
-  list&amp;lt;T, Alloc&amp;gt; counter[64];
-  int fill = 0;
-  while (!empty()) &amp;#123;
-    carry.splice(carry.begin(), *this, begin());
-    int i = 0;
-    while(i &amp;lt; fill &amp;amp;&amp;amp; !counter[i].empty()) &amp;#123;
-      counter[i].merge(carry);
-      carry.swap(counter[i++]);
-    &amp;#125;
-    carry.swap(counter[i]);        
-    if (i == fill) ++fill;
-  &amp;#125;
-
-  for (int i = 1; i &amp;lt; fill; ++i)
-     counter[i].merge(counter[i-1]);
-
-  swap(counter[fill-1]);
-&amp;#125;
-
-性质：counter[i]的元素个数只可能有三种可能：0,2^(i-1)，2^i其中2^i为counter[i]的不稳定状态，只要满足该元素个数，在该次循环中最终交换到i+1中。若此时i+1中的元素个数为2^(i+1)，则持续向上交换到i+2中。carry作为且仅仅作为此交换的中转。
-Quick Sort 还是 Merge Sort？首先，看一下两个算法的思想：
-
-快速排序，采用分而治之的思想，是Hoare提出的一种划分交换排序，非stable sort，属于Exchange sorts的范畴
-归并排序，采用分而治之的思想，是Neumann提出的一种基于比较的排序，绝大数实现为stable sort，属于Merge sorts的范畴。
-
-（可参考维基百科中两种算法的描述）经过调试可知，list sort算法属于merge sort。测试可得到同样的结论,以下是测试代码：
-#include&amp;lt;iostream&amp;gt;
-#include &amp;lt;list&amp;gt;
-using namespace std;
-#include &amp;lt;stdlib.h&amp;gt;
-#define TESTNUM 500
-struct Point
-&amp;#123;
-	int value;
-	int num;
-	friend bool operator &amp;lt;(Point v1,Point v2)
-	&amp;#123;
-		return v1.value&amp;lt;v2.value;
-	&amp;#125;
-&amp;#125;;
-int main()
-&amp;#123;
-	freopen(&#34;STL List Test.txt&#34;,&#34;w&#34;,stdout);
-	list&amp;lt;Point&amp;gt; container;
-	srand(0);
-	for (int i=0;i&amp;lt;TESTNUM;i++)
-	&amp;#123;
-		Point p;
-		p.value=rand()%100;
-		p.num=i;
-		container.push_back(p);
-	&amp;#125;
-	container.sort();
-	for (list&amp;lt;Point&amp;gt;::iterator it = container.begin(); it != container.end(); ++it)
-	&amp;#123;
-		printf(&#34;%d   %d\n&#34;,(*it).value,(*it).num);
-	&amp;#125;
-&amp;#125;
-
-本文作者：cyningsun本文地址： https://www.cyningsun.com/04-08-2011/stl-list-sort.html 版权声明：本博客所有文章除特别声明外，均采用 CC BY-NC-ND 3.0 CN 许可协议。转载请注明出处！">
+void list&amp;lt;T, Alloc&amp;gt">
 
 <meta name="keywords" content="STL,sort">
 
@@ -329,7 +264,7 @@ gtag('config', 'UA-156665333-1');
           
             <li><span><a href="/04-09-2011/stl-introsort.html">SGI-STL源码剖析之IntroSort</a></span></li>
           
-            <li><span><a href="/04-04-2011/stl-rbtree.html">SGI-STL源码剖析之RB-tree</a></span></li>
+            <li><span><a href="/04-04-2011/stl-heap.html">SGI-STL源码剖析之Heap</a></span></li>
           
   </ol>
 
@@ -339,7 +274,7 @@ gtag('config', 'UA-156665333-1');
      <li class="next"><a href="/04-09-2011/stl-introsort.html">Newer &rarr;</a></li>
     
     
-    <li class="previous"><a href="/04-04-2011/stl-rbtree.html">&larr; Older</a></li>
+    <li class="previous"><a href="/04-04-2011/stl-heap.html">&larr; Older</a></li>
     
 </ul>
 </div>

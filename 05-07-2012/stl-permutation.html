@@ -17,64 +17,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta itemprop="description" name="description" content="STL中涉及到数组的排列的有两个函数，即next_permutation/prev_permutation，分别用于求上一个以及下一个排列。两函数的算法使用的原理大体相同。以next_permutation为例，列出算法并解释。
 算法：
-首先，从最为段开始往前寻找两个相邻的元素，令第一个元素索引为endi第二个元素索引为endii，且满足array[endi]&amp;lt;array[endii]。然后，再从最尾端开始向前检测，找到第一个大于array[endi]的元素，令其为索引j。将元素array[endi],array[j]对调，然后将endii之后的所有元素颠倒排列。即求的下一个排列。
-解释：
-一、如果数组k以后的是一个递减序列，则仅依靠调换k以后的元素不可能完成任务，所以必须找到满足k&amp;gt;k+1的元素，即保证k以后的序列不递减。
-二、满足一之后，那么下一个序列的第k位一定是从后面找到刚好比a[k]大的一个比a[k]大的一个数打头的（为了保证刚好大于，又k+1之后的元素递减，所以从数组尾开始找到第一个比a[k]大的元素即可满足要求）。将这个数的索引记为j。
-三、将a[j]与a[k]对调。此时，j后面的元素是降序的。所以需要把j后面的逆转一下，从降序到升序，如此就得到了恰好比之前序列大一号的序列。
-代码：next_permutation
-bool nextPermutation(int array[],int len)
-&amp;#123;
-    int endi=len-1;
-    int endii;
-    if(len==1)return false;
-    while(true)
-    &amp;#123;
-        endii=endi;
-        endi--;
-        if(array[endi]&amp;lt;array[endii])// 如果前一个元素小于后一个元素
-        &amp;#123;
-            int j=len;
-            while(array[--j]&amp;lt;array[endi]);// 由尾端往前找，直到遇上比array[endi]大的元素
-            swap(array[j],array[endi]);   // 交换找到的元素
-            reverse(array+endii,array+len-1);// 将 endii 之后的元素全部逆向重排
-            return true;
-        &amp;#125;
-        if(endi==0)//排列已至最大，无下一个排列
-        &amp;#123;
-            reverse(array,array+len-1);
-            return false;
-        &amp;#125;
-    &amp;#125;
-&amp;#125;
-
-代码：prev_permutation
-bool prevPermutation(int array[],int len)
-&amp;#123;
-    int endi=len-1;
-    int endii;
-    if(len==1)return false;
-    while(true)
-    &amp;#123;
-        endii=endi;
-        endi--;
-        if(array[endi]&amp;gt;array[endii])// 如果前一个元素大于后一个元素
-        &amp;#123;
-            int j=len;
-            while(array[--j]&amp;gt;array[endi]);// 由尾端往前找，直到遇上比array[endi]小的元素
-            swap(array[j],array[endi]);   // 交换找到的元素
-            reverse(array+endii,array+len-1);// 将 endii 之后的元素全部逆向重排
-            return true;
-        &amp;#125;
-        if(endi==0)//排列已至最小，无上一个排列
-        &amp;#123;
-            reverse(array,array+len-1);
-            return false;
-        &amp;#125;
-    &amp;#125;
-&amp;#125;
-
-本文作者：cyningsun本文地址： https://www.cyningsun.com/05-07-2012/stl-permutation.html 版权声明：本博客所有文章除特别声明外，均采用 CC BY-NC-ND 3.0 CN 许可协议。转载请注明出处！">
+首先，从最为段开始往前寻找两个相邻的元素，令第一个元素索引为endi第二个元素索引为endii，且满足array[endi">
 
 <meta name="keywords" content="STL,next permutation,prev permutation">
 
@@ -313,7 +256,7 @@ gtag('config', 'UA-156665333-1');
           
             <li><span><a href="/04-08-2011/stl-list-sort.html">SGI-STL源码剖析之list::sort()</a></span></li>
           
-            <li><span><a href="/04-04-2011/stl-rbtree.html">SGI-STL源码剖析之RB-tree</a></span></li>
+            <li><span><a href="/04-04-2011/stl-heap.html">SGI-STL源码剖析之Heap</a></span></li>
           
   </ol>
 
